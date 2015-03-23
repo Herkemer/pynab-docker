@@ -16,26 +16,37 @@ your host.
 
 To complete he installation please run through the following steps:
 
-1. Obtain the latest config sample file and edit to match your
+* Obtain the latest config sample file and edit to match your
 configuration:
+
 	wget -O config.py https://raw.githubusercontent.com/Murodese/pynab/master/config_sample.py
-2. cp .dbenv-dist .dbenv and edit
-   NOTE: If you modify the amount of memory available to your database
-   here be sure to also edit docker-compose.yml for the postgres
-   entry.
-5. cp .apienv-dist .apienv and edit
-   This should be the hostname that you expect to use when connecting
-   to your api.
-5. cp api/config.js-dist api/config.js and edit
-   This should be where you expect the webui to be available, if
-   you've chosen to not enable the webui then this value can be
-   whatever you'd like.
-6. docker-compose build
-   This step will take some time as it pulls down various images and
-   code and builds the required files.
-7. docker-compose up -d postgres
-   This will launch the postgres container for the first time,
-   generate the required database and tuning files.
+
+* cp .dbenv-dist .dbenv and edit
+ 
+  NOTE: If you modify the amount of memory available to your database
+  here be sure to also edit docker-compose.yml for the postgres
+  entry.
+
+* cp .apienv-dist .apienv and edit
+
+  This should be the hostname that you expect to use when connecting
+  to your api.
+
+* cp api/config.js-dist api/config.js and edit
+
+  This should be where you expect the webui to be available, if
+  you've chosen to not enable the webui then this value can be
+  whatever you'd like.
+
+* docker-compose build
+
+  This step will take some time as it pulls down various images and
+  code and builds the required files.
+
+* docker-compose up -d postgres
+
+  This will launch the postgres container for the first time,
+  generate the required database and tuning files.
 
 If you are updating from a previous release and have a database backup
 you may restore that backup and proceed to the startup phase.
@@ -63,9 +74,8 @@ etc) then run the following commands:
 Run that command with --help to see other options, such as skipping
 the conversion of some tables.
 
-If you have nzb files to import you can run the following command
-
-XXX - something about linking into backup first
+If you have nzb files to import you can move them into the backup
+directory nd then run the following command:
 
   > docker-compose run --rm scan python3 scripts/import.py /backup/nzbfiles
 
