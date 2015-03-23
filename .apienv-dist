@@ -1,0 +1,2 @@
+VIRTUAL_HOST=api.example.com
+VIRTUAL_PORT=8080
