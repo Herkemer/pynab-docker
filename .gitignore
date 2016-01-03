@@ -53,6 +53,11 @@ docs/_build/
 # PyBuilder
 target/
 
+*~
 .apienv
 .dbenv
 api/config.js
+backup/pynab*
+backup/nzb*
+logs/*.log*
+logs/*.csv
