@@ -1,4 +1,3 @@
 DB_NAME=pynab
 DB_USER=pynab
 DB_PASS=mypassword
-DB_MEM=2147483648

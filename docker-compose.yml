@@ -16,12 +16,12 @@ api:
   env_file:
    - .apienv
   volumes:
-   - api/api-nginx.conf:/etc/nginx/sites-enabled/api-nginx.conf
-   - api/api-uwsgi.ini:/opt/uwsgi.ini
-   - api/api-supervisord.conf:/etc/supervisor/conf.d/pynab-api.conf
-   - api/config.js:/opt/pynab/webui/app/scripts/config.js
-   - config.py:/opt/pynab/config.py
-   - logs:/opt/log
+   - ./api/api-nginx.conf:/etc/nginx/sites-enabled/api-nginx.conf
+   - ./api/api-uwsgi.ini:/opt/uwsgi.ini
+   - ./api/api-supervisord.conf:/etc/supervisor/conf.d/pynab-api.conf
+   - ./api/config.js:/opt/pynab/webui/app/scripts/config.js
+   - ./config.py:/opt/pynab/config.py
+   - ./logs:/opt/log
   command: supervisord -n
 
 scan:
@@ -30,9 +30,9 @@ scan:
   links:
    - postgres
   volumes:
-   - config.py:/opt/pynab/config.py
-   - logs:/opt/log
-   - backup:/backup
+   - ./config.py:/opt/pynab/config.py
+   - ./logs:/opt/log
+   - ./backup:/backup
   command: /usr/bin/python3 /opt/pynab/scan.py update
 
 postprocess:
@@ -41,8 +41,8 @@ postprocess:
   links:
    - postgres
   volumes:
-   - config.py:/opt/pynab/config.py
-   - logs:/opt/log
+   - ./config.py:/opt/pynab/config.py
+   - ./logs:/opt/log
   command: /usr/bin/python3 /opt/pynab/postprocess.py
 
 prebot:
@@ -51,8 +51,8 @@ prebot:
   links:
    - postgres
   volumes:
-   - config.py:/opt/pynab/config.py
-   - logs:/opt/log
+   - ./config.py:/opt/pynab/config.py
+   - ./logs:/opt/log
   command: /usr/bin/python3 /opt/pynab/prebot.py start
 
 stats:
@@ -61,8 +61,8 @@ stats:
   links:
    - postgres
   volumes:
-   - config.py:/opt/pynab/config.py
-   - logs:/opt/log
+   - ./config.py:/opt/pynab/config.py
+   - ./logs:/opt/log
   command: /usr/bin/python3 /opt/pynab/scripts/stats.py
 
 postgres:
@@ -73,7 +73,7 @@ postgres:
   volumes_from:
    - postgresdata
   volumes:
-   - backup:/backup
+   - ./backup:/backup
 
 postgresdata:
   image: busybox

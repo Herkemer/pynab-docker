@@ -6,8 +6,8 @@ to setup and run your own installation of the Pynab indexer using
 Docker containers.  It includes running the Scanning, Postprocessing,
 Prebot and API/WebUI features backed by a PostgreSQL database.
 
-This project assumes the user has some familiarity with how Pynab
-works.
+This project assumes the user has some familiarity with how Pynab and
+Docker Compose work.
 
 ## Installation
 
@@ -23,10 +23,6 @@ configuration:
 
 * cp .dbenv-dist .dbenv and edit
  
-  NOTE: If you modify the amount of memory available to your database
-  here be sure to also edit docker-compose.yml for the postgres
-  entry.
-
 * cp .apienv-dist .apienv and edit
 
   This should be the hostname that you expect to use when connecting
@@ -48,8 +44,13 @@ configuration:
   This will launch the postgres container for the first time,
   generate the required database and tuning files.
 
+  nt to change how much memory the database uses you need to modify
+  the docker-compose.yml file as well as updating local.conf (see file
+  for more details).
+
 If you are updating from a previous release and have a database backup
-you may restore that backup and proceed to the startup phase.
+you may restore that backup, run an alembic upgrade  and proceed to
+the startup phase.
 
 If you are starting from scratch or converting from a Newznab
 installation please see below.

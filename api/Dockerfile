@@ -12,6 +12,8 @@ RUN apt-get install -y git-core
 RUN apt-get install -y python3 python3-setuptools python3-pip
 RUN apt-get install -y libxml2-dev libxslt-dev libyaml-dev
 
+RUN apt-get install -y liblapack-dev
+
 RUN apt-get install -y postgresql-server-dev-9.3 postgresql-client
 
 RUN apt-get install -y unrar
@@ -27,7 +29,6 @@ RUN apt-get clean &&\
   rm -rf /var/lib/apt/lists/* &&\
   rm -rf /tmp/*
 
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
 
 RUN git clone https://github.com/Murodese/pynab.git /opt/pynab
