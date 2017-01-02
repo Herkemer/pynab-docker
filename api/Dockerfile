@@ -31,7 +31,7 @@ RUN apt-get clean &&\
 
 RUN rm /etc/nginx/sites-enabled/default
 
-RUN git clone https://github.com/Murodese/pynab.git /opt/pynab
+RUN git clone -b development-postgres https://github.com/Murodese/pynab.git /opt/pynab
 
 RUN pip3 install -r /opt/pynab/requirements.txt
 

@@ -23,10 +23,8 @@ RUN apt-get clean &&\
   rm -rf /var/lib/apt/lists/* &&\
   rm -rf /tmp/*
 
-RUN git clone https://github.com/Murodese/pynab.git /opt/pynab
+RUN git clone -b development-postgres https://github.com/Murodese/pynab.git /opt/pynab
 
 RUN pip3 install -r /opt/pynab/requirements.txt
-
-RUN pip3 install uwsgi
 
 WORKDIR /opt/pynab

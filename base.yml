@@ -1,0 +1,10 @@
+version: '2'
+services:
+  base:
+    build: .
+    mem_limit: 104857600
+    networks:
+      - backend
+    volumes:
+     - ./config.py:/opt/pynab/config.py
+     - ./logs:/opt/log

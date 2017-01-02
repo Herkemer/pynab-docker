@@ -1,81 +1,89 @@
-nginx:
-  image: jwilder/nginx-proxy
-  mem_limit: 104857600
-  ports:
-   - "80:80"
-  volumes:
-   - /var/run/docker.sock:/tmp/docker.sock
+version: '2'
+services:
+  nginx:
+    image: jwilder/nginx-proxy
+    mem_limit: 104857600
+    ports:
+     - "80:80"
+    networks:
+      - backend
+      - api
+    volumes:
+     - /var/run/docker.sock:/tmp/docker.sock
 
-api:
-  build: api
-  mem_limit: 104857600
-  links:
-   - postgres
-  ports:
-   - 8080
-  env_file:
-   - .apienv
-  volumes:
-   - ./api/api-nginx.conf:/etc/nginx/sites-enabled/api-nginx.conf
-   - ./api/api-uwsgi.ini:/opt/uwsgi.ini
-   - ./api/api-supervisord.conf:/etc/supervisor/conf.d/pynab-api.conf
-   - ./api/config.js:/opt/pynab/webui/app/scripts/config.js
-   - ./config.py:/opt/pynab/config.py
-   - ./logs:/opt/log
-  command: supervisord -n
+  api:
+    build: ./api
+    mem_limit: 104857600
+    ports:
+     - 8080
+    env_file:
+     - .apienv
+    networks:
+      - api
+      - backend
+    depends_on:
+      - nginx
+      - postgres
+    volumes:
+      - ./api/api-nginx.conf:/etc/nginx/sites-enabled/api-nginx.conf
+      - ./api/api-uwsgi.ini:/opt/uwsgi.ini
+      - ./api/api-supervisord.conf:/etc/supervisor/conf.d/pynab-api.conf
+      - ./api/config.js:/opt/pynab/webui/app/scripts/config.js
+      - ./config.py:/opt/pynab/config.py
+      - ./logs:/opt/log
+    command: supervisord -n
 
-scan:
-  build: .
-  mem_limit: 2147483648
-  links:
-   - postgres
-  volumes:
-   - ./config.py:/opt/pynab/config.py
-   - ./logs:/opt/log
-   - ./backup:/backup
-  command: /usr/bin/python3 /opt/pynab/scan.py update
+  scan:
+    extends:
+      file: base.yml
+      service: base
+    mem_limit: 1048576000
+    depends_on:
+     - postgres
+    command: /usr/bin/python3 /opt/pynab/scan.py update
 
-postprocess:
-  build: .
-  mem_limit: 524288000
-  links:
-   - postgres
-  volumes:
-   - ./config.py:/opt/pynab/config.py
-   - ./logs:/opt/log
-  command: /usr/bin/python3 /opt/pynab/postprocess.py
+  postprocess:
+    extends:
+      file: base.yml
+      service: base
+    mem_limit: 524288000
+    depends_on:
+     - postgres
+    command: /usr/bin/python3 /opt/pynab/postprocess.py
 
-prebot:
-  build: .
-  mem_limit: 104857600
-  links:
-   - postgres
-  volumes:
-   - ./config.py:/opt/pynab/config.py
-   - ./logs:/opt/log
-  command: /usr/bin/python3 /opt/pynab/prebot.py start
+  prebot:
+    extends:
+      file: base.yml
+      service: base
+    depends_on:
+     - postgres
+    command: /usr/bin/python3 /opt/pynab/prebot.py start
 
-stats:
-  build: .
-  mem_limit: 104857600
-  links:
-   - postgres
-  volumes:
-   - ./config.py:/opt/pynab/config.py
-   - ./logs:/opt/log
-  command: /usr/bin/python3 /opt/pynab/scripts/stats.py
+  stats:
+    extends:
+      file: base.yml
+      service: base
+    depends_on:
+      - postgres
+    command: /usr/bin/python3 /opt/pynab/scripts/stats.py
 
-postgres:
-  build: postgres
-  env_file:
-   - .dbenv
-  mem_limit: 2147483648
-  volumes_from:
-   - postgresdata
-  volumes:
-   - ./backup:/backup
+  postgres:
+    build: postgres
+    env_file:
+     - .dbenv
+    mem_limit: 3196059648
+    networks:
+      - backend
+    volumes:
+     - postgres_data:/var/lib/postgresql/data
+     - ./backup:/backup
 
-postgresdata:
-  image: busybox
-  volumes:
-   - /var/lib/postgresql/data
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  backend:
+    driver: bridge
+  api:
+    driver: bridge
